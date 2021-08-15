@@ -1,0 +1,114 @@
+//Find shortest unique prefix for every word in a given list
+
+#include <iostream>
+using namespace std;
+
+// declaring the struct TrieNode
+struct TrieNode
+{
+    struct TrieNode *child[26];
+    int freq;
+};
+
+// creating the TreiNode
+struct TrieNode *newTrieNode()
+{
+    struct TrieNode *newNode= new TrieNode;
+    newNode->freq=1;
+    
+    for(int i=0;i<26;i++)
+    {
+        newNode->child[i]=NULL;
+        
+    }
+    return newNode;
+}
+
+
+// inserting node 
+void insert(struct TrieNode *root , string s)
+{
+    struct TrieNode *x=root;
+    
+    for(int i=0;i<s.size();i++)
+    {
+        int index=s[i]-'a';
+        
+        if(x->child[index]==NULL)
+        x->child[index]=newTrieNode();
+        else
+        x->child[index]->freq++;
+        
+        
+        // move to the next child
+       x= x->child[index];
+    }
+}
+
+
+// This function prints unique prefix for every word stored
+// in Trie. Prefixes one by one are stored in prefix[].
+// 'ind' is current index of prefix[]
+void findPrefixesUtil(struct TrieNode *root, char prefix[], int ind)
+{
+    if(root==NULL)
+    return ;
+    
+    if(root->freq==1)
+    {
+        prefix[ind]='\0';
+        cout<<prefix<<" ";
+        return ;
+        
+    }
+    
+    
+    for(int i=0;i<26;i++)
+    {
+        if(root->child[i]!=NULL)
+        {
+            prefix[ind]=i+'a';
+             findPrefixesUtil(root->child[i], prefix, ind+1);
+        }
+    }
+    
+    
+}
+                      
+
+
+
+
+
+// printing all the prefix words
+void FindPrefix( string a[],int n)
+{
+    // constructing new node for all the words
+    struct TrieNode *root= newTrieNode();
+  root->freq=0;
+  
+  for(int i=0;i<n;i++)
+  insert(root,a[i]);
+  
+  // /Create an array to store all prefixes
+    char prefix[100];
+    
+        // Print all prefixes using Trie Traversal
+    findPrefixesUtil(root, prefix, 0);
+
+    
+}
+
+
+int main() 
+{
+	int n;
+	cin>>n;
+	string a[n];
+	for(int i=0;i<n;i++)
+	{
+	    cin>>a[i];
+	}
+	
+	FindPrefix(a,n);
+}
